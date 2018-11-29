@@ -1,7 +1,5 @@
 package ar.com.gopay.domain;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,8 +7,8 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "username" }),
-        @UniqueConstraint(columnNames = { "email" })
+        @UniqueConstraint(columnNames = { "username" })/*,
+        @UniqueConstraint(columnNames = { "email" })*/
 })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
@@ -20,14 +18,10 @@ public abstract class User {
     protected Long id;
 
     @NotBlank
-    @Size(min = 6, max = 50)
-    protected String name;
-
-    @NotBlank
     @Size(min = 6, max = 15)
     protected String username;
 
-    @NaturalId
+    //@NaturalId
     @NotBlank
     @Size(min = 6, max = 50)
     @Email
@@ -39,8 +33,7 @@ public abstract class User {
 
     public User() { }
 
-    public User(String name, String username, @Email String email, String password) {
-        this.name = name;
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -62,14 +55,6 @@ public abstract class User {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -86,14 +71,4 @@ public abstract class User {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

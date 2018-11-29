@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 public class PaymentLink {
 
-    private static final int EXPIRATION = 60 * 24;
+    private static final int EXPIRATION = 60;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

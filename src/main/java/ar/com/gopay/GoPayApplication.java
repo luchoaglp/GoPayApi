@@ -7,34 +7,38 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@ImportResource(value="classpath:hsql_cfg.xml") // Only for hsqldb
 public class GoPayApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GoPayApplication.class, args);
 	}
 
-    @Bean
-    CommandLineRunner init(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+	@Bean
+	CommandLineRunner init(UserRepository userRepository,
+						   PasswordEncoder passwordEncoder) {
 
-	    return args -> {
+		return args -> {
 
-            User company1 = new Company("Company 1", "company1",
-                    "company1@email.com",
-                    passwordEncoder.encode("123456"));
-            User company2 = new Company("Company 2", "company2",
-                    "company2@email.com",
-                    passwordEncoder.encode("654321"));
+			User company1 = new Company("despegar",
+					"despegar@email.com",
+					passwordEncoder.encode("123456"),
+					"despegar.com",
+					"https://www.staticontent.com/shifu/static/logos/despegar.svg");
 
-            userRepository.save(company1);
-            userRepository.save(company2);
-        };
-    }
+			User company2 = new Company("potiers",
+					"potiershome@email.com",
+					passwordEncoder.encode("123456"),
+					"Potiers Home",
+					"https://www.potiershome.com/images/logo.png");
+
+			userRepository.save(company1);
+			userRepository.save(company2);
+
+		};
+	}
 
 }
 

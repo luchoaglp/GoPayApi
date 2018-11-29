@@ -5,13 +5,19 @@ import ar.com.gopay.repository.PaymentLinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentLinkService {
 
     @Autowired
     private PaymentLinkRepository paymentLinkRepository;
 
-    public void createPaymentLink(PaymentLink paymentLink) {
-        paymentLinkRepository.save(paymentLink);
+    public PaymentLink createPaymentLink(PaymentLink paymentLink) {
+        return paymentLinkRepository.save(paymentLink);
+    }
+
+    public List<PaymentLink> getAll() {
+        return paymentLinkRepository.findAll();
     }
 }

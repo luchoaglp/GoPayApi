@@ -58,16 +58,19 @@ public class UserPrincipal implements UserDetails {
                     .map(role -> new SimpleGrantedAuthority(role.getName().name())
                     ).collect(Collectors.toList());
             */
-        }
 
-        return new UserPrincipal(
-                user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
+            Company company = (Company) user;
+
+            return new UserPrincipal(
+                    company.getId(),
+                    company.getName(),
+                    company.getUsername(),
+                    company.getEmail(),
+                    company.getPassword(),
+                    authorities
+            );
+        }
+        return null;
     }
 
     public Long getId() {

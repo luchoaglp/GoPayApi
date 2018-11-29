@@ -23,21 +23,18 @@ public class PaymentLinkController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/payment_link")
+    @PostMapping("/payment-link")
     public ResponseEntity<?> createPaymentLink(@Valid @RequestBody PaymentLinkRequest paymentLinkRequest) {
 
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String token = UUID.randomUUID().toString();
 
-        PaymentLink link = new PaymentLink(token,
+        PaymentLink link = paymentLinkService.createPaymentLink(new PaymentLink(token,
                 paymentLinkRequest.getAmount(),
-                userService.getCompanyById(user.getId()));
+                userService.getCompanyById(user.getId())));
 
-        paymentLinkService.createPaymentLink(link);
-
-        return ResponseEntity.ok(new PaymentLinkResponse("http://localhost:8000/gopay/payment_link", token));
+        return ResponseEntity.ok(new PaymentLinkResponse("http://localhost:8000/gopay/payment-link", link.getId(), token));
     }
-
 
 }
