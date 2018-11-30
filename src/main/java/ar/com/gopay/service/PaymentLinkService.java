@@ -20,4 +20,8 @@ public class PaymentLinkService {
     public List<PaymentLink> getAll() {
         return paymentLinkRepository.findAll();
     }
+
+    public PaymentLink getByExternalTxIdCompanyId(String externalTxId, Long id) {
+        return paymentLinkRepository.findByExternalTxIdAndCompanyId(externalTxId, id);
+    }
 }

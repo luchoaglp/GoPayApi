@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Entity
+@Table(name = "payments_links")
 public class PaymentLink {
 
     private static final int EXPIRATION = 60;
@@ -21,6 +22,8 @@ public class PaymentLink {
 
     private Double amount;
 
+    private String externalTxId;
+
     @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private Company company;
@@ -29,16 +32,18 @@ public class PaymentLink {
 
     public PaymentLink() {
     }
-
+/*
     public PaymentLink(final String token, Double amount) {
         this.token = token;
         this.amount = amount;
+        this.externalTxId = externalTxId;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
-
-    public PaymentLink(final String token, Double amount, Company company) {
+*/
+    public PaymentLink(String token, Double amount, String externalTxId, Company company) {
         this.token = token;
         this.amount = amount;
+        this.externalTxId = externalTxId;
         this.company = company;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
@@ -91,12 +96,21 @@ public class PaymentLink {
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
+    public String getExternalTxId() {
+        return externalTxId;
+    }
+
+    public void setExternalTxId(String externalTxId) {
+        this.externalTxId = externalTxId;
+    }
+
     @Override
     public String toString() {
         return "PaymentLink{" +
                 "id=" + id +
                 ", token='" + token + '\'' +
                 ", amount=" + amount +
+                ", externalTxId='" + externalTxId + '\'' +
                 ", company=" + company +
                 ", expiryDate=" + expiryDate +
                 '}';

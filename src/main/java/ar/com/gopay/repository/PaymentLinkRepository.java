@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentLinkRepository extends JpaRepository<PaymentLink, Long> {
 
-
+    PaymentLink findByExternalTxIdAndCompanyId(String externalTxId, Long id);
 }
