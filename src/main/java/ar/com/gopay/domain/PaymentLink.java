@@ -2,6 +2,7 @@ package ar.com.gopay.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,8 +21,11 @@ public class PaymentLink {
     @Size(max = 36)
     private String token;
 
+    @NotNull
     private Double amount;
 
+    @NotBlank
+    @NotNull
     private String externalTxId;
 
     @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER)

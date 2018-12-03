@@ -3,6 +3,7 @@ package ar.com.gopay.domain;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -17,16 +18,19 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @NotNull
     @NotBlank
     @Size(min = 6, max = 15)
     protected String username;
 
     //@NaturalId
+    @NotNull
     @NotBlank
     @Size(min = 6, max = 50)
     @Email
     protected String email;
 
+    @NotNull
     @NotBlank
     @Size(max = 100)
     protected String password;

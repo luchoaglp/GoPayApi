@@ -1,13 +1,16 @@
 package ar.com.gopay.payload;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class LoginRequest {
 
-    @NotBlank
+    @NotNull(message = "{username.notnull}")
+    @NotBlank(message = "{username.notblank}")
     private String username;
 
-    @NotBlank
+    @NotNull(message = "{password.notnull}")
+    @NotBlank(message = "{password.notblank}")
     private String password;
 
     public String getUsername() {

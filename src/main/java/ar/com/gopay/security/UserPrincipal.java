@@ -52,12 +52,6 @@ public class UserPrincipal implements UserDetails {
         if(user instanceof Company) {
 
             authorities = Arrays.asList(new SimpleGrantedAuthority("COMPANY_ROLE"));
-            /*
-            List<GrantedAuthority> authorities = user.getRoles()
-                    .stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getName().name())
-                    ).collect(Collectors.toList());
-            */
 
             Company company = (Company) user;
 

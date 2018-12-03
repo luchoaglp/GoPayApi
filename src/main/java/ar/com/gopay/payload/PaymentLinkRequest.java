@@ -7,11 +7,11 @@ import javax.validation.constraints.NotNull;
 
 public class PaymentLinkRequest {
 
-    @NotNull
+    @NotNull(message = "{amount.notnull}")
     private Double amount;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "{externalTxId.notnull}")
+    @NotBlank(message = "{externalTxId.notblank}")
     @JsonProperty("external_tx_id")
     private String externalTxId;
 
