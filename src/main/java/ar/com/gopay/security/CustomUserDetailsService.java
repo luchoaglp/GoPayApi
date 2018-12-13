@@ -1,7 +1,7 @@
 package ar.com.gopay.security;
 
 import ar.com.gopay.domain.User;
-import ar.com.gopay.repository.UserRepository;
+import ar.com.gopay.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    CompanyRepository companyRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // Let people login with username
-        User user = userRepository.findByUsername(username)
+        User user = companyRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username  : " + username)
                 );
@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserById(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(
+        User user = companyRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with id : " + id)
         );
 

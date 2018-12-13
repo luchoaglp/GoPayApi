@@ -7,8 +7,8 @@ import ar.com.gopay.payload.PaymentLinkRequest;
 import ar.com.gopay.payload.PaymentLinkResponse;
 import ar.com.gopay.payload.PaymentLinkStateResponse;
 import ar.com.gopay.security.UserPrincipal;
+import ar.com.gopay.service.CompanyService;
 import ar.com.gopay.service.PaymentLinkService;
-import ar.com.gopay.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.UUID;
+
+import static ar.com.gopay.domain.PaymentLinkState.CA;
+import static ar.com.gopay.domain.PaymentLinkState.PE;
 
 @RestController
 @RequestMapping("/payment-link")
@@ -29,7 +32,7 @@ public class PaymentLinkController {
     private PaymentLinkService paymentLinkService;
 
     @Autowired
-    private UserService userService;
+    private CompanyService companyService;
 
     @PostMapping
     public ResponseEntity<?> createPaymentLink(@Valid @RequestBody PaymentLinkRequest paymentLinkRequest) {
@@ -41,7 +44,8 @@ public class PaymentLinkController {
         PaymentLink link = paymentLinkService.createPaymentLink(new PaymentLink(token,
                 paymentLinkRequest.getAmount(),
                 paymentLinkRequest.getExternalTxId(),
-                userService.getCompanyById(user.getId())));
+                companyService.getById(user.getId()),
+                PE));
 
         return ResponseEntity.ok(new PaymentLinkResponse(goPayUrl+ "payment-link", link.getId(), token));
     }
@@ -59,8 +63,14 @@ public class PaymentLinkController {
             );
         }
 
+        PaymentLinkState paymentLinkState = paymentLink.getState();
+
+        if(paymentLink.getState().equals(PE) && paymentLink.isTokenExpired()) {
+            paymentLinkState = CA;
+        }
+
         return ResponseEntity.ok(
-                new PaymentLinkStateResponse(paymentLink.getId(), PaymentLinkState.PE));
+                new PaymentLinkStateResponse(paymentLink.getId(), paymentLinkState));
     }
 
 }

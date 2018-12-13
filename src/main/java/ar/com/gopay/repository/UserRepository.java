@@ -2,14 +2,13 @@ package ar.com.gopay.repository;
 
 import ar.com.gopay.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+@NoRepositoryBean
+public interface UserRepository<T extends User> extends JpaRepository<T, Long> {
 
-    Optional<User> findByUsername(String username);
+    Optional<T> findByUsername(String username);
 
-    Boolean existsByUsername(String username);
 }
