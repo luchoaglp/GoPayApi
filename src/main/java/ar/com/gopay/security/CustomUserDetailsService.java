@@ -1,6 +1,7 @@
 package ar.com.gopay.security;
 
 import ar.com.gopay.domain.User;
+import ar.com.gopay.exception.CustomUsernameNotFoundException;
 import ar.com.gopay.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Let people login with username
         User user = companyRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with username  : " + username)
+                        new CustomUsernameNotFoundException("Credenciales inválidas")
                 );
 
         return UserPrincipal.create(user);
@@ -34,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserById(Long id) {
 
         User user = companyRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + id)
+                () -> new CustomUsernameNotFoundException("Credenciales inválidas")
         );
 
         return UserPrincipal.create(user);

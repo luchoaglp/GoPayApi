@@ -1,6 +1,8 @@
 package ar.com.gopay.exception;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Date;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -34,8 +37,32 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 request);
     }
 
+    @ExceptionHandler(CustomUsernameNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleCustomUsernameNotFoundException(CustomUsernameNotFoundException ex,
+                                                                                   WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException ex,
+                                                                             WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+/*
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handleAllExceptions(Exception ex, WebRequest request) {
+
+        System.out.println("Exception");
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
@@ -47,6 +74,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException ex,
                                                                        WebRequest request) {
 
+        System.out.println("BadRequestException");
+
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
                 ex.getMessage(),
                 request.getDescription(false));
@@ -54,15 +83,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException ex,
-                                                                             WebRequest request) {
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
-    }
+    */
 
 }

@@ -10,6 +10,8 @@ public class JwtAuthenticationResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
+    public JwtAuthenticationResponse() { }
+
     public JwtAuthenticationResponse(String accessToken) {
         this.accessToken = accessToken;
     }
