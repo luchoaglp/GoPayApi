@@ -2,7 +2,6 @@ package ar.com.gopay.service;
 
 import ar.com.gopay.domain.PaymentLink;
 import ar.com.gopay.repository.PaymentLinkRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class PaymentLinkService {
 
-    @Autowired
-    private PaymentLinkRepository paymentLinkRepository;
+    private final PaymentLinkRepository paymentLinkRepository;
+
+    public PaymentLinkService(PaymentLinkRepository paymentLinkRepository) {
+        this.paymentLinkRepository = paymentLinkRepository;
+    }
 
     public PaymentLink createPaymentLink(PaymentLink paymentLink) {
         return paymentLinkRepository.save(paymentLink);
@@ -21,7 +23,16 @@ public class PaymentLinkService {
         return paymentLinkRepository.findAll();
     }
 
-    public PaymentLink getByExternalTxIdCompanyId(String externalTxId, Long id) {
+    public PaymentLink getFirstByExternalTxId(String externalTxId) {
+        return paymentLinkRepository.findFirstByExternalTxId(externalTxId);
+    }
+
+    public Boolean existsByExternalTxIdAndCompanyId(String externalTxId, Long id) {
+        return paymentLinkRepository.existsByExternalTxIdAndCompanyId(externalTxId, id);
+    }
+
+    public PaymentLink getByExternalTxIdAndCompanyId(String externalTxId, Long id) {
         return paymentLinkRepository.findByExternalTxIdAndCompanyId(externalTxId, id);
     }
+
 }

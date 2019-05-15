@@ -10,6 +10,8 @@ public class PaymentLinkRequest {
     @NotNull(message = "{amount.notnull}")
     private Double amount;
 
+    private String description;
+
     @NotNull(message = "{externalTxId.notnull}")
     @NotBlank(message = "{externalTxId.notblank}")
     @JsonProperty("external_tx_id")
@@ -23,6 +25,14 @@ public class PaymentLinkRequest {
         this.amount = amount;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getExternalTxId() {
         return externalTxId;
     }
@@ -30,4 +40,5 @@ public class PaymentLinkRequest {
     public void setExternalTxId(String externalTxId) {
         this.externalTxId = externalTxId;
     }
+
 }

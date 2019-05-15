@@ -15,19 +15,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static ar.com.gopay.domain.PaymentLinkState.CA;
+import static ar.com.gopay.domain.PaymentLinkState.PE;
+
 @Entity
 @Table(name = "payments_links")
 public class PaymentLink {
 
-    private static final int EXPIRATION = 30;
+    private static final int EXPIRATION = 120;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
     @Size(max = 36)
     private String token;
+
+    private String description;
 
     @NotNull
     private Double amount;
@@ -45,6 +50,7 @@ public class PaymentLink {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT-03:00")
     private Date expiryDate;
 
+    @Enumerated(EnumType.STRING)
     private PaymentLinkState state;
 
     @JsonIgnore
@@ -73,11 +79,15 @@ public class PaymentLink {
     @Transient
     private boolean tokenExpired;
 
+    @JsonProperty("fees_quantity")
+    private Integer feesQuantity;
+
     public PaymentLink() {
     }
 
-    public PaymentLink(String token, Double amount, String externalTxId, Company company, PaymentLinkState state) {
+    public PaymentLink(String token, String description, Double amount, String externalTxId, Company company, PaymentLinkState state) {
         this.token = token;
+        this.description = description;
         this.amount = amount;
         this.externalTxId = externalTxId;
         this.company = company;
@@ -104,7 +114,7 @@ public class PaymentLink {
     }
 
     public boolean isTokenExpired() {
-        return this.tokenExpired = this.getExpiryDate().getTime() - Calendar.getInstance().getTime().getTime() <= 0;
+        return this.tokenExpired = this.expiryDate.getTime() - Calendar.getInstance().getTime().getTime() <= 0;
     }
 
     public Long getId() {
@@ -121,6 +131,14 @@ public class PaymentLink {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Double getAmount() {
@@ -184,11 +202,23 @@ public class PaymentLink {
     }
 
     public PaymentLinkState getState() {
+
+        if(isPending() && isTokenExpired()) {
+            return CA;
+        }
         return state;
     }
 
     public void setState(PaymentLinkState state) {
         this.state = state;
+    }
+
+    public Integer getFeesQuantity() {
+        return feesQuantity;
+    }
+
+    public void setFeesQuantity(Integer feesQuantity) {
+        this.feesQuantity = feesQuantity;
     }
 
     public NosisSms getNosisSms() {
@@ -206,5 +236,21 @@ public class PaymentLink {
         this.nosisSms = nosisSms;
     }
 
+    public boolean isPending() {
+        return state == PE;
+    }
 
+    @Override
+    public String toString() {
+        return "PaymentLink{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", amount=" + amount +
+                ", externalTxId='" + externalTxId + '\'' +
+                ", expiryDate=" + expiryDate +
+                ", createdDate=" + createdDate +
+                ", tokenExpired=" + tokenExpired +
+                ", feesQuantity=" + feesQuantity +
+                '}';
+    }
 }

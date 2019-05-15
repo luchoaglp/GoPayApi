@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class NosisSmsValidation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonProperty("server_state")
@@ -23,7 +23,7 @@ public class NosisSmsValidation {
     private String smsDetail;
 
     @JsonProperty("isSmsSent")
-    private Boolean isSmsSent = false;
+    private Boolean smsSent = false;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
@@ -74,11 +74,11 @@ public class NosisSmsValidation {
     }
 
     public Boolean getSmsSent() {
-        return isSmsSent;
+        return smsSent;
     }
 
     public void setSmsSent(Boolean smsSent) {
-        isSmsSent = smsSent;
+        this.smsSent = smsSent;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class NosisSmsValidation {
                 ", serverState=" + serverState +
                 ", serverDetail='" + serverDetail + '\'' +
                 ", smsDetail='" + smsDetail + '\'' +
-                ", isSmsSent=" + isSmsSent +
+                ", smsSent=" + smsSent +
                 '}';
     }
 }

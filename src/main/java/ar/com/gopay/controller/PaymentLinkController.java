@@ -2,6 +2,7 @@ package ar.com.gopay.controller;
 
 import ar.com.gopay.domain.PaymentLink;
 import ar.com.gopay.domain.PaymentLinkState;
+import ar.com.gopay.exception.AppException;
 import ar.com.gopay.exception.ResourceNotFoundException;
 import ar.com.gopay.payload.PaymentLinkRequest;
 import ar.com.gopay.payload.PaymentLinkResponse;
@@ -9,7 +10,6 @@ import ar.com.gopay.payload.PaymentLinkStateResponse;
 import ar.com.gopay.security.UserPrincipal;
 import ar.com.gopay.service.CompanyService;
 import ar.com.gopay.service.PaymentLinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,26 +28,33 @@ public class PaymentLinkController {
     @Value("${gopay.url}")
     private String goPayUrl;
 
-    @Autowired
-    private PaymentLinkService paymentLinkService;
+    private final PaymentLinkService paymentLinkService;
+    private final CompanyService companyService;
 
-    @Autowired
-    private CompanyService companyService;
+    public PaymentLinkController(PaymentLinkService paymentLinkService, CompanyService companyService) {
+        this.paymentLinkService = paymentLinkService;
+        this.companyService = companyService;
+    }
 
     @PostMapping
     public ResponseEntity<?> createPaymentLink(@Valid @RequestBody PaymentLinkRequest paymentLinkRequest) {
 
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        if(paymentLinkService.existsByExternalTxIdAndCompanyId(paymentLinkRequest.getExternalTxId(), user.getId())) {
+            throw new AppException("Transacción ya registrada");
+        }
+
         String token = UUID.randomUUID().toString();
 
         PaymentLink link = paymentLinkService.createPaymentLink(new PaymentLink(token,
+                paymentLinkRequest.getDescription(),
                 paymentLinkRequest.getAmount(),
                 paymentLinkRequest.getExternalTxId(),
                 companyService.getById(user.getId()),
                 PE));
 
-        return ResponseEntity.ok(new PaymentLinkResponse(goPayUrl+ "payment-link", link.getId(), token));
+        return ResponseEntity.ok(new PaymentLinkResponse(goPayUrl + "payment-link", link.getId(), token));
     }
 
     @GetMapping("/tx-state/{externalTxId}")
@@ -55,7 +62,7 @@ public class PaymentLinkController {
 
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        PaymentLink paymentLink = paymentLinkService.getByExternalTxIdCompanyId(externalTxId, user.getId());
+        PaymentLink paymentLink = paymentLinkService.getByExternalTxIdAndCompanyId(externalTxId, user.getId());
 
         if(paymentLink == null) {
             throw new ResourceNotFoundException(
