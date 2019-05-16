@@ -2,13 +2,18 @@ package ar.com.gopay.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "companies")
 public class Company extends User {
+
+    @NotNull
+    @NotBlank(message = "{username.notblank}")
+    @Size(min = 6, max = 15)
+    private String username;
 
     @NotBlank
     @Size(min = 6, max = 50)
@@ -19,9 +24,18 @@ public class Company extends User {
     public Company() { }
 
     public Company(String username, String email, String password, String name, String logo) {
-        super(username, email, password);
+        super(email, password);
+        this.username = username;
         this.name = name;
         this.logo = logo;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
@@ -43,10 +57,10 @@ public class Company extends User {
     @Override
     public String toString() {
         return "Company{" +
-                "name='" + name + '\'' +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
                 ", logo='" + logo + '\'' +
                 ", id=" + id +
-                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

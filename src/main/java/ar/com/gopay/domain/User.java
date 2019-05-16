@@ -7,10 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "username" })/*,
-        @UniqueConstraint(columnNames = { "email" })*/
-})
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
 
@@ -18,12 +15,6 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 6, max = 15)
-    protected String username;
-
-    //@NaturalId
     @NotNull
     @NotBlank
     @Size(min = 6, max = 50)
@@ -37,8 +28,7 @@ public abstract class User {
 
     public User() { }
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
@@ -49,14 +39,6 @@ public abstract class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {

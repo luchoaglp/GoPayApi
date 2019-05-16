@@ -23,9 +23,9 @@ public class Client extends User {
 
     public Client() { }
 
-    public Client(String username, String email, String password,
+    public Client(String email, String password,
                   String firstName, String lastName, String dni) {
-        super(username, email, password);
+        super(email, password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.dni = dni;
@@ -62,8 +62,8 @@ public class Client extends User {
                 ", lastName='" + lastName + '\'' +
                 ", dni='" + dni + '\'' +
                 ", id=" + id +
-                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }
+
 }
